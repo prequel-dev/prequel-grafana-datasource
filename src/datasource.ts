@@ -1,8 +1,7 @@
 import { DataSourceInstanceSettings, CoreApp, ScopedVars, AnnotationEvent } from '@grafana/data';
-import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
+import { DataSourceWithBackend, getTemplateSrv, getBackendSrv } from '@grafana/runtime';
 
 import { MyQuery, DataSourceOptions, DEFAULT_QUERY } from './types';
-import { getBackendSrv } from '@grafana/runtime';
 import { firstValueFrom } from 'rxjs';
 
 export class DataSource extends DataSourceWithBackend<MyQuery, DataSourceOptions> {
