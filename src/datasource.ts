@@ -1,19 +1,24 @@
-import { DataSourceInstanceSettings, ScopedVars, AnnotationEvent } from '@grafana/data';
-import { DataSourceWithBackend, getTemplateSrv, getBackendSrv } from '@grafana/runtime';
+import { DataSourceInstanceSettings, ScopedVars } from '@grafana/data';
+import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 
+// import { DataSourceInstanceSettings, ScopedVars, AnnotationEvent } from '@grafana/data';
+// import { DataSourceWithBackend, getTemplateSrv, getBackendSrv } from '@grafana/runtime';
+
+//import { AnnotationQueryEditor } from './components/AnnotationQueryEditor';
 import { PrequelDataQuery, DataSourceOptions } from './types';
-import { firstValueFrom } from 'rxjs';
+//import { firstValueFrom } from 'rxjs';
 
 export class DataSource extends DataSourceWithBackend<PrequelDataQuery, DataSourceOptions> {
-  constructor(private instanceSettings: DataSourceInstanceSettings<DataSourceOptions>) {
+  constructor(instanceSettings: DataSourceInstanceSettings<DataSourceOptions>) {
     super(instanceSettings);
+    this.annotations = {};
   }
 
   applyTemplateVariables(query: PrequelDataQuery, scopedVars: ScopedVars) {
     console.log('applyTemplateVariables', query, scopedVars);
     return {
       ...query,
-      queryText: getTemplateSrv().replace(query.filter, scopedVars),
+      filter: getTemplateSrv().replace(query.filter, scopedVars),
     };
   }
 
@@ -22,33 +27,33 @@ export class DataSource extends DataSourceWithBackend<PrequelDataQuery, DataSour
   //   return !!query.queryText;
   // }
 
-  async annotationQuery(options: any): Promise<AnnotationEvent[]> {
-    console.log('annotationQuery', options);
-    const { range, annotation } = options;
-    const from = range.from.toISOString();
-    const to = range.to.toISOString();
+  // async annotationQuery(options: any): Promise<AnnotationEvent[]> {
+  //   console.log('annotationQuery', options);
+  //   const { range, annotation } = options;
+  //   const from = range.from.toISOString();
+  //   const to = range.to.toISOString();
 
-    const response = await firstValueFrom(getBackendSrv().fetch<AnnotationEvent[]>({
-      method: 'POST',
-      url: `/api/datasources/uid/${this.instanceSettings.uid}/resources/annotations`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        range: { from, to },
-        annotation: {
-          query: annotation.query,
-        },
-      },
-    }));
+  //   const response = await firstValueFrom(getBackendSrv().fetch<AnnotationEvent[]>({
+  //     method: 'POST',
+  //     url: `/api/datasources/uid/${this.instanceSettings.uid}/resources/annotations`,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     data: {
+  //       range: { from, to },
+  //       annotation: {
+  //         query: annotation.query,
+  //       },
+  //     },
+  //   }));
 
-    return response.data.map((item: any) => ({
-      annotation,
-      time: item.time,
-      title: item.title || '',
-      text: item.text || '',
-      tags: item.tags || [],
-    }));
-  }
+  //   return response.data.map((item: any) => ({
+  //     annotation,
+  //     time: item.time,
+  //     title: item.title || '',
+  //     text: item.text || '',
+  //     tags: item.tags || [],
+  //   }));
+  // }
 
 }

@@ -36,21 +36,25 @@ func (d *Datasource) QueryData(ctx context.Context, req *backend.QueryDataReques
 const maxDataValue = 100
 
 type queryModel struct {
+	Filter string `json:"filter"`
 }
 
-func (d *Datasource) query(_ context.Context, pCtx backend.PluginContext, query backend.DataQuery) backend.DataResponse {
+func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, query backend.DataQuery) backend.DataResponse {
 	var response backend.DataResponse
 
 	// Unmarshal the JSON into our queryModel.
 	var qm queryModel
 
-	log.DefaultLogger.Info("QUERY", "JSON", string(query.JSON), "start", query.TimeRange.From, "end", query.TimeRange.To)
+	log.DefaultLogger.Info("QUERY", "JSON", string(query.JSON), "start", query.TimeRange.From, "end", query.TimeRange.To, "RefID", query.RefID)
 
 	err := json.Unmarshal(query.JSON, &qm)
 	if err != nil {
 		return backend.ErrDataResponse(backend.StatusBadRequest, fmt.Sprintf("json unmarshal: %v", err.Error()))
 	}
 
+	if query.RefID == "Anno" {
+		return d.handleAnnotationsQuery(ctx, query, qm)
+	}
 	// create data frame response.
 	// For an overview on data frames and how grafana handles them:
 	// https://grafana.com/developers/plugin-tools/introduction/data-frames
