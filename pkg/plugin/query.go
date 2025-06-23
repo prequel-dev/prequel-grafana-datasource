@@ -32,8 +32,10 @@ func (d *Datasource) QueryData(ctx context.Context, req *backend.QueryDataReques
 	return response, nil
 }
 
+// For development purposes
+const maxDataValue = 100
+
 type queryModel struct {
-	Constant int64 `json:"constant,omitempty"`
 }
 
 func (d *Datasource) query(_ context.Context, pCtx backend.PluginContext, query backend.DataQuery) backend.DataResponse {
@@ -58,7 +60,7 @@ func (d *Datasource) query(_ context.Context, pCtx backend.PluginContext, query 
 	timePoints := populateTimePoints(query.TimeRange, 10)
 
 	// Generate random values between 0 and maxValue
-	maxValue := int64(qm.Constant) // You can adjust this maximum value as needed
+	maxValue := int64(maxDataValue) // You can adjust this maximum value as needed
 	values := make([]int64, len(timePoints))
 	for i := range values {
 		values[i] = rand.Int63n(maxValue + 1) // rand.Int63n(n) returns [0, n)

@@ -1,29 +1,26 @@
-import { DataSourceInstanceSettings, CoreApp, ScopedVars, AnnotationEvent } from '@grafana/data';
+import { DataSourceInstanceSettings, ScopedVars, AnnotationEvent } from '@grafana/data';
 import { DataSourceWithBackend, getTemplateSrv, getBackendSrv } from '@grafana/runtime';
 
-import { MyQuery, DataSourceOptions, DEFAULT_QUERY } from './types';
+import { PrequelDataQuery, DataSourceOptions } from './types';
 import { firstValueFrom } from 'rxjs';
 
-export class DataSource extends DataSourceWithBackend<MyQuery, DataSourceOptions> {
+export class DataSource extends DataSourceWithBackend<PrequelDataQuery, DataSourceOptions> {
   constructor(private instanceSettings: DataSourceInstanceSettings<DataSourceOptions>) {
     super(instanceSettings);
   }
 
-  getDefaultQuery(_: CoreApp): Partial<MyQuery> {
-    return DEFAULT_QUERY;
-  }
-
-  applyTemplateVariables(query: MyQuery, scopedVars: ScopedVars) {
+  applyTemplateVariables(query: PrequelDataQuery, scopedVars: ScopedVars) {
+    console.log('applyTemplateVariables', query, scopedVars);
     return {
       ...query,
-      queryText: getTemplateSrv().replace(query.queryText, scopedVars),
+      queryText: getTemplateSrv().replace(query.filter, scopedVars),
     };
   }
 
-  filterQuery(query: MyQuery): boolean {
-    // if no query has been provided, prevent the query from being executed
-    return !!query.queryText;
-  }
+  // filterQuery(query: MyQuery): boolean {
+  //   // if no query has been provided, prevent the query from being executed
+  //   return !!query.queryText;
+  // }
 
   async annotationQuery(options: any): Promise<AnnotationEvent[]> {
     console.log('annotationQuery', options);
