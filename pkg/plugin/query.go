@@ -12,6 +12,26 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )
 
+// QueryData handles multiple queries and returns multiple responses.
+// req contains the queries []DataQuery (where each query contains RefID as a unique identifier).
+// The QueryDataResponse contains a map of RefID to the response for each query, and each response
+// contains Frames ([]*Frame).
+func (d *Datasource) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	// create response struct
+	response := backend.NewQueryDataResponse()
+
+	// loop over queries and execute them individually.
+	for _, q := range req.Queries {
+		res := d.query(ctx, req.PluginContext, q)
+
+		// save the response in a hashmap
+		// based on with RefID as identifier
+		response.Responses[q.RefID] = res
+	}
+
+	return response, nil
+}
+
 type queryModel struct {
 	Constant int64 `json:"constant,omitempty"`
 }
