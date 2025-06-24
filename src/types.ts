@@ -6,6 +6,7 @@ export interface PreqQuery extends DataQuery {
 }
 
 export const DEFAULT_QUERY: Partial<PreqQuery> = {
+  queryText: '',
 };
 
 /**

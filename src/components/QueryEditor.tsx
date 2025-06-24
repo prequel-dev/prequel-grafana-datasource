@@ -12,7 +12,6 @@ export function QueryEditor({ query, onChange }: Props) {
   };
 
   const { queryText } = query;
-
   return (
     <Stack gap={0}>
       <InlineField label="Query Text" labelWidth={16} tooltip="Not used yet">
@@ -22,6 +21,7 @@ export function QueryEditor({ query, onChange }: Props) {
           value={queryText || ''}
           required
           placeholder="Enter a query"
+          width={100}
         />
       </InlineField>
     </Stack>

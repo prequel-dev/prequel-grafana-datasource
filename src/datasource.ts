@@ -6,6 +6,14 @@ import { PreqQuery, PreqDataSourceOptions, DEFAULT_QUERY } from './types';
 export class DataSource extends DataSourceWithBackend<PreqQuery, PreqDataSourceOptions> {
   constructor(instanceSettings: DataSourceInstanceSettings<PreqDataSourceOptions>) {
     super(instanceSettings);
+    this.annotations = {
+      getDefaultQuery() {
+        return {
+          ...DEFAULT_QUERY,
+          queryType: 'annotations',
+        };
+      },
+    };
   }
 
   getDefaultQuery(_: CoreApp): Partial<PreqQuery> {

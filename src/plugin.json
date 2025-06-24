@@ -5,6 +5,7 @@
   "id": "prequel-prequel-datasource",
   "metrics": true,
   "backend": true,
+  "annotations": true,
   "executable": "gpx_prequel",
   "info": {
     "description": "",
