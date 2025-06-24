@@ -8,9 +8,14 @@ export class DataSource extends DataSourceWithBackend<PreqQuery, PreqDataSourceO
     super(instanceSettings);
     this.annotations = {
       getDefaultQuery() {
-        return {
+        const query = {
           ...DEFAULT_QUERY,
           queryType: 'annotations',
+        };
+        // Ensure the annotation has a target property pointing to the query itself
+        return {
+          ...query,
+          target: query,
         };
       },
     };

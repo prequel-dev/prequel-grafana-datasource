@@ -3,6 +3,7 @@ import { DataQuery } from '@grafana/schema';
 
 export interface PreqQuery extends DataQuery {
   queryText?: string;
+  target?: any; // For annotation queries that need a target property
 }
 
 export const DEFAULT_QUERY: Partial<PreqQuery> = {
