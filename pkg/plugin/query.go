@@ -18,8 +18,6 @@ import (
 // The QueryDataResponse contains a map of RefID to the response for each query, and each response
 // contains Frames ([]*Frame).
 func (d *Datasource) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
-	// b, _ := json.Marshal(req)
-	// log.DefaultLogger.Info("QueryData", "req", string(b))
 	// create response struct
 	response := backend.NewQueryDataResponse()
 
@@ -56,10 +54,10 @@ func (d *Datasource) queryData(_ context.Context, pCtx backend.PluginContext, qu
 	// https://grafana.com/developers/plugin-tools/introduction/data-frames
 	frame := data.NewFrame("response")
 
-	// add fields.
+	// add fields. no data.
 	frame.Fields = append(frame.Fields,
-		data.NewField("time", nil, []time.Time{query.TimeRange.From, query.TimeRange.To}),
-		data.NewField("values", nil, []int64{10, 20}),
+		data.NewField("time", nil, []time.Time{}),
+		data.NewField("values", nil, []int64{}),
 	)
 
 	// add the frames to the response.
@@ -91,8 +89,6 @@ func (d *Datasource) queryAnnotations(_ context.Context, pCtx backend.PluginCont
 	if err != nil {
 		return backend.ErrDataResponse(backend.StatusBadRequest, fmt.Sprintf("json unmarshal: %v", err.Error()))
 	}
-
-	log.DefaultLogger.Info("queryAnnotations", "queryText", qm.QueryText)
 
 	u := setQueryParams(d.url, query.TimeRange.From, query.TimeRange.To, qm.QueryText)
 
