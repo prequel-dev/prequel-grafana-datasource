@@ -1,26 +1,27 @@
 import { DataSourceInstanceSettings, CoreApp, ScopedVars } from '@grafana/data';
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 
-import { MyQuery, PreqDataSourceOptions, DEFAULT_QUERY } from './types';
+import { PreqQuery, PreqDataSourceOptions, DEFAULT_QUERY } from './types';
 
-export class DataSource extends DataSourceWithBackend<MyQuery, PreqDataSourceOptions> {
+export class DataSource extends DataSourceWithBackend<PreqQuery, PreqDataSourceOptions> {
   constructor(instanceSettings: DataSourceInstanceSettings<PreqDataSourceOptions>) {
     super(instanceSettings);
   }
 
-  getDefaultQuery(_: CoreApp): Partial<MyQuery> {
+  getDefaultQuery(_: CoreApp): Partial<PreqQuery> {
     return DEFAULT_QUERY;
   }
 
-  applyTemplateVariables(query: MyQuery, scopedVars: ScopedVars) {
+  applyTemplateVariables(query: PreqQuery, scopedVars: ScopedVars) {
     return {
       ...query,
       queryText: getTemplateSrv().replace(query.queryText, scopedVars),
     };
   }
 
-  filterQuery(query: MyQuery): boolean {
+  filterQuery(query: PreqQuery): boolean {
     // if no query has been provided, prevent the query from being executed
-    return !!query.queryText;
+    // return !!query.queryText;
+    return true;
   }
 }
